@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meme Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f3f3f3;
+    }
+    .meme-container {
+      margin: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    .meme-img {
+      width: 100%;
+      height: auto;
+    }
+    .meme-caption {
+      text-align: center;
+      padding: 10px;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Top Trending Memes</h1>
+  <div id="memes-container"></div>
+
+  <script>
+    const memesContainer = document.getElementById('memes-container');
+
+    async function fetchMemes() {
+      try {
+        const response = await fetch('https://api.imgflip.com/get_memes');
+        const data = await response.json();
+        const memes = data.data.memes;
+
+
+        // Shuffle the array of memes
+        memes.sort(() => Math.random() - 0.5);
+
+        // Display only first 10 memes
+          memes.slice(0, 10).forEach(meme => {
+          const memeElement = document.createElement('div');
+          memeElement.className = 'meme-container';
+
+          const imgElement = document.createElement('img');
+          imgElement.className = 'meme-img';
+          imgElement.src = meme.url;
+          imgElement.alt = meme.name;
+
+          const captionElement = document.createElement('div');
+          captionElement.className = 'meme-caption';
+          captionElement.textContent = meme.name;
+
+          memeElement.appendChild(imgElement);
+          memeElement.appendChild(captionElement);
+          memesContainer.appendChild(memeElement);
+        });
+      } catch (error) {
+        console.error('Error fetching memes:', error);
+      }
+    }
+
+    fetchMemes();
+  </script>
+</body>
+</html>
